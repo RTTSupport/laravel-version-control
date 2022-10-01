@@ -14,7 +14,7 @@ use Redsnapper\LaravelVersionControl\Scopes\SoftDeletingScope;
 
 class BaseModel extends Model
 {
-    protected $primaryKey = 'uid';
+    protected $primaryKey = 'id';
 
     /**
      * The "type" of the primary key ID.
@@ -55,8 +55,8 @@ class BaseModel extends Model
         }
 
         if ($version->save()) {
-            $this->uid = $version->model_uid;
-            $this->vc_version_uid = $version->uid;
+            $this->id = $version->model_id;
+            $this->vc_version_id = $version->id;
             $this->vc_active = $version->vc_active;
 
             return true;
@@ -96,8 +96,8 @@ class BaseModel extends Model
     {
         $instance = $this->getVersionInstance();
 
-        $foreignKey = "model_uid";
-        $localKey = "uid";
+        $foreignKey = "model_id";
+        $localKey = "id";
 
         return $this->newHasMany(
           $instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $localKey
@@ -113,8 +113,8 @@ class BaseModel extends Model
     {
         $instance = $this->getVersionInstance();
 
-        $foreignKey = "uid";
-        $localKey = "vc_version_uid";
+        $foreignKey = "id";
+        $localKey = "vc_version_id";
 
         return $this->newHasOne($instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $localKey);
     }
@@ -247,7 +247,7 @@ class BaseModel extends Model
      */
     public function validateVersion(): bool
     {
-        return $this->versions()->latest()->first()->uid === $this->vc_version_uid;
+        return $this->versions()->latest()->first()->id === $this->vc_version_id;
     }
 
     /**
@@ -258,7 +258,7 @@ class BaseModel extends Model
      */
     public function validateData(): bool
     {
-        $me = collect(Arr::except($this->toArray(), ['uid', 'vc_version_uid', 'updated_at']));
+        $me = collect(Arr::except($this->toArray(), ['id', 'vc_version_id', 'updated_at']));
 
         $difference = $me->diffAssoc($this->versions()->latest()->first()->toArray());
 
