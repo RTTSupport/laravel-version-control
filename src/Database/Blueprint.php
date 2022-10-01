@@ -9,19 +9,19 @@ class Blueprint extends LaravelBlueprint
 
     public function vcKeyTableColumns(string $tableName)
     {
-        $this->uuid('uid')->unique();
-        $this->uuid('vc_version_uid');
+        $this->uuid('id')->unique();
+        $this->uuid('vc_version_id');
         $this->boolean('vc_active')->default(1);
-        $this->primary('uid', "{$tableName}_vc_primary_key");
+        $this->primary('id', "{$tableName}_vc_primary_key");
     }
 
     public function vcVersionTableColumns($tableName)
     {
-        $this->uuid('uid');
-        $this->uuid('model_uid');
+        $this->uuid('id');
+        $this->uuid('model_id');
         $this->uuid('vc_parent')->nullable();
         $this->boolean('vc_active')->default(true);
-        $this->uuid('vc_modifier_uid')->nullable();
-        $this->primary('uid', "{$tableName}_vc_primary_key");
+        $this->uuid('vc_modifier_id')->nullable();
+        $this->primary('id', "{$tableName}_vc_primary_key");
     }
 }
