@@ -21,7 +21,7 @@ class BelongsToMany extends \Illuminate\Database\Eloquent\Relations\BelongsToMan
      *
      * @var array
      */
-    protected $pivotColumns = ['created_at', 'updated_at', 'uid', 'vc_version_uid'];
+    protected $pivotColumns = ['created_at', 'updated_at', 'id', 'vc_version_id'];
 
     /**
      * The cached copy of the currently attached pivot models.
