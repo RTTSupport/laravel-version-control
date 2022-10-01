@@ -19,7 +19,7 @@ class Version extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'uid';
+    protected $primaryKey = 'id';
 
     /**
      * Indicates if the IDs are auto-incrementing.
@@ -59,11 +59,11 @@ class Version extends Model
          */
         static::creating(function (Version $model) {
 
-            $uid = (string) Str::uuid();
+            $id = (string) Str::uuid();
             $model->created_at = $model->freshTimestamp();
-            $model->uid = $uid;
+            $model->id = $id;
             if (auth()->check()) {
-                $model->vc_modifier_uid = auth()->user()->uid;
+                $model->vc_modifier_id = auth()->user()->id;
             }
         });
     }
@@ -78,7 +78,7 @@ class Version extends Model
     {
 
         $this->forceFill($this->removeBaseModelAttributes($attributes));
-        $this->model_uid = (string) Str::uuid();
+        $this->model_id = (string) Str::uuid();
         $this->vc_active = true;
         $this->vc_parent = null;
 
@@ -96,10 +96,10 @@ class Version extends Model
 
         $this->forceFill($this->removeBaseModelAttributes($attributes));
 
-        $this->model_uid = $attributes['uid'];
+        $this->model_id = $attributes['id'];
 
         // The previous version
-        $this->vc_parent = $attributes['vc_version_uid'];
+        $this->vc_parent = $attributes['vc_version_id'];
 
         return $this;
     }
@@ -114,8 +114,8 @@ class Version extends Model
     protected function removeBaseModelAttributes(array $attributes): array
     {
         return Arr::except($attributes, [
-            'vc_version_uid',
-            'uid',
+            'vc_version_id',
+            'id',
             'created_at',
             'updated_at'
         ]);
@@ -149,11 +149,11 @@ class Version extends Model
     {
 
         $model->fill(
-            Arr::except($this->attributes, ['uid', 'model_uid', 'vc_parent', 'created_at'])
+            Arr::except($this->attributes, ['id', 'model_id', 'vc_parent', 'created_at'])
         );
 
         $model->forceFill([
-            'vc_version_uid' => $this->attributes['uid']
+            'vc_version_id' => $this->attributes['id']
         ]);
 
         return tap($model)->save();
@@ -166,7 +166,7 @@ class Version extends Model
      */
     public function modifyingUser(): BelongsTo
     {
-        return $this->belongsTo(config('version-control.user'), 'vc_modifier_uid', 'uid')
+        return $this->belongsTo(config('version-control.user'), 'vc_modifier_id', 'id')
             ->withDefault(config('version-control.default_modifying_user'));
     }
 
@@ -208,7 +208,7 @@ class Version extends Model
      */
     public function toModelArray()
     {
-        return Arr::except($this->attributes, ['uid', 'model_uid', 'vc_parent']);
+        return Arr::except($this->attributes, ['id', 'model_id', 'vc_parent']);
     }
 
     /**
